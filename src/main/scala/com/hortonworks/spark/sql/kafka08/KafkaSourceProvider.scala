@@ -76,6 +76,12 @@ private[kafka08] class KafkaSourceProvider extends StreamSourceProvider
     // id. Hence, we should generate a unique id for each query.
     val uniqueGroupId = s"spark-kafka-source-${UUID.randomUUID}-${metadataPath.hashCode}"
 
+    val topics =
+      caseInsensitiveParams.get(TOPICS) match {
+        case Some(s) => s.split(",").map(_.trim).filter(_.nonEmpty).toSet
+        case None => throw new IllegalArgumentException(s"$TOPICS should be set.")
+      }
+
     val startFromEarliestOffset =
       caseInsensitiveParams.get(STARTING_OFFSET_OPTION_KEY).map(_.trim.toLowerCase) match {
         case Some("largest") => false
@@ -107,8 +113,8 @@ private[kafka08] class KafkaSourceProvider extends StreamSourceProvider
 
     new KafkaSource(
       sqlContext,
-      strategy,
-      kafkaParamsForExecutors,
+      topics,
+      kafkaParams.asScala.toMap,
       parameters,
       metadataPath,
       startFromEarliestOffset,
@@ -208,6 +214,7 @@ private[kafka08] class KafkaSourceProvider extends StreamSourceProvider
 }
 
 private[kafka010] object KafkaSourceProvider {
+  private val TOPICS = "topics"
   private val STARTING_OFFSET_OPTION_KEY = "startingoffset"
   private val STARTING_OFFSET_OPTION_VALUES = Set("largest", "smallest")
   private val FAIL_ON_DATA_LOSS_OPTION_KEY = "failondataloss"

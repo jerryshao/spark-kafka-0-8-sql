@@ -17,16 +17,17 @@
 
 package com.hortonworks.spark.sql.kafka08
 
-import org.apache.kafka.common.TopicPartition
-
+import kafka.common.TopicAndPartition
 import org.apache.spark.sql.execution.streaming.Offset
+import org.apache.spark.streaming.kafka.KafkaCluster.LeaderOffset
 
 /**
  * An [[Offset]] for the [[KafkaSource]]. This one tracks all partitions of subscribed topics and
  * their offsets.
  */
 private[kafka08]
-case class KafkaSourceOffset(partitionToOffsets: Map[TopicPartition, Long]) extends Offset {
+case class KafkaSourceOffset(partitionToOffsets: Map[TopicAndPartition, LeaderOffset])
+  extends Offset {
   override def toString(): String = {
     partitionToOffsets.toSeq.sortBy(_._1.toString).mkString("[", ", ", "]")
   }
@@ -35,21 +36,13 @@ case class KafkaSourceOffset(partitionToOffsets: Map[TopicPartition, Long]) exte
 /** Companion object of the [[KafkaSourceOffset]] */
 private[kafka08] object KafkaSourceOffset {
 
-  def getPartitionOffsets(offset: Offset): Map[TopicPartition, Long] = {
+  def getPartitionOffsets(offset: Offset): Map[TopicAndPartition, LeaderOffset] = {
     offset match {
       case o: KafkaSourceOffset => o.partitionToOffsets
       case _ =>
         throw new IllegalArgumentException(
           s"Invalid conversion from offset of ${offset.getClass} to KafkaSourceOffset")
     }
-  }
-
-  /**
-   * Returns [[KafkaSourceOffset]] from a variable sequence of (topic, partitionId, offset)
-   * tuples.
-   */
-  def apply(offsetTuples: (String, Int, Long)*): KafkaSourceOffset = {
-    KafkaSourceOffset(offsetTuples.map { case(t, p, o) => (new TopicPartition(t, p), o) }.toMap)
   }
 }
 
