@@ -70,7 +70,6 @@ private[kafka08] class KafkaSourceProvider extends StreamSourceProvider
         .map { k => k.drop(6).toString -> parameters(k) }
         .toMap
 
-    val deserClassName = classOf[ByteArrayDeserializer].getName
     // Each running query should use its own group id. Otherwise, the query may be only assigned
     // partial data since Kafka will assign partitions to multiple consumers having the same group
     // id. Hence, we should generate a unique id for each query.
@@ -94,9 +93,6 @@ private[kafka08] class KafkaSourceProvider extends StreamSourceProvider
 
     val kafkaParams =
       ConfigUpdater("source", specifiedKafkaParams)
-        .set(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, deserClassName)
-        .set(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserClassName)
-
         // Set to "largest" to avoid exceptions. However, KafkaSource will fetch the initial offsets
         // by itself instead of counting on KafkaConsumer.
         .set(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "largest")
@@ -213,7 +209,7 @@ private[kafka08] class KafkaSourceProvider extends StreamSourceProvider
   }
 }
 
-private[kafka010] object KafkaSourceProvider {
+private[kafka08] object KafkaSourceProvider {
   private val TOPICS = "topics"
   private val STARTING_OFFSET_OPTION_KEY = "startingoffset"
   private val STARTING_OFFSET_OPTION_VALUES = Set("largest", "smallest")

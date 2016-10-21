@@ -17,19 +17,16 @@
 
 package com.hortonworks.spark.sql.kafka08
 
-
 import scala.annotation.tailrec
-
 import kafka.common.TopicAndPartition
 import kafka.message.MessageAndMetadata
-import org.apache.kafka.common.serialization.ByteArrayDeserializer
+import kafka.serializer.DefaultDecoder
 import org.apache.spark.SparkException
 import org.apache.spark.sql._
 import org.apache.spark.sql.execution.streaming._
 import org.apache.spark.sql.types._
-import org.apache.spark.streaming.kafka.{KafkaCluster, KafkaUtils, OffsetRange}
+import org.apache.spark.streaming.kafka.{Broker, KafkaCluster, KafkaUtils, OffsetRange}
 import org.apache.spark.streaming.kafka.KafkaCluster.LeaderOffset
-
 import com.hortonworks.spark.sql.kafka08.util.Logging
 
 /**
@@ -118,7 +115,7 @@ private[kafka08] case class KafkaSource(
     }.toArray
 
     val leaders = untilPartitionOffsets.map { case (tp, lo) =>
-      tp -> (lo.host, lo.port)
+      tp -> Broker(lo.host, lo.port)
     }
 
     val messageHandler = (mmd: MessageAndMetadata[Array[Byte], Array[Byte]]) => {
@@ -129,8 +126,8 @@ private[kafka08] case class KafkaSource(
     val rdd = KafkaUtils.createRDD[
       Array[Byte],
       Array[Byte],
-      ByteArrayDeserializer,
-      ByteArrayDeserializer,
+      DefaultDecoder,
+      DefaultDecoder,
       Row](sc, kafkaParams, offsetRanges, leaders, messageHandler)
 
     info("GetBatch generating RDD of offset range: " +
