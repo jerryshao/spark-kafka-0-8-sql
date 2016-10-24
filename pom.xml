@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.hortonworks.spark</groupId>
-  <artifactId>kafka-0-8-sql_2.11</artifactId>
+  <artifactId>spark-kafka-0-8-sql_2.11</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <properties>
@@ -61,20 +61,6 @@
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
       <version>0.8.2.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.16</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.0</version>
-      <scope>provided</scope>
     </dependency>
 
   </dependencies>
@@ -183,7 +169,7 @@
             </systemProperties>
             <redirectTestOutputToFile>${test.redirectToFile}</redirectTestOutputToFile>
             <useFile>${test.redirectToFile}</useFile>
-            <argLine>${argLine} -Xmx2g -XX:MaxPermSize=512m</argLine>
+            <argLine>-Xmx2g -XX:MaxPermSize=512m</argLine>
             <failIfNoTests>false</failIfNoTests>
           </configuration>
         </plugin>
@@ -201,7 +187,7 @@
             <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
             <junitxml>.</junitxml>
             <filereports>WDF TestSuite.txt</filereports>
-            <argLine>${argLine} -Xmx2g -XX:MaxPermSize=512m</argLine>
+            <argLine>-Xmx2g -XX:MaxPermSize=512m</argLine>
           </configuration>
           <executions>
             <execution>
