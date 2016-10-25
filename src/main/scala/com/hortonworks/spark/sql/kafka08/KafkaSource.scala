@@ -18,6 +18,7 @@
 package com.hortonworks.spark.sql.kafka08
 
 import scala.annotation.tailrec
+
 import kafka.common.TopicAndPartition
 import kafka.message.MessageAndMetadata
 import kafka.serializer.DefaultDecoder
@@ -27,6 +28,7 @@ import org.apache.spark.sql.execution.streaming._
 import org.apache.spark.sql.types._
 import org.apache.spark.streaming.kafka.{Broker, KafkaCluster, KafkaUtils, OffsetRange}
 import org.apache.spark.streaming.kafka.KafkaCluster.LeaderOffset
+
 import com.hortonworks.spark.sql.kafka08.util.Logging
 
 /**
@@ -45,7 +47,7 @@ import com.hortonworks.spark.sql.kafka08.util.Logging
  * To avoid this issue, you should make sure stopping the query before stopping the Kafka brokers
  * and not use wrong broker addresses.
  */
-private[kafka08] case class KafkaSource(
+case class KafkaSource(
     sqlContext: SQLContext,
     topics: Set[String],
     kafkaParams: Map[String, String],

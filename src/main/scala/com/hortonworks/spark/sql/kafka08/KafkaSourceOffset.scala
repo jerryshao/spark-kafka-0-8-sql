@@ -25,7 +25,6 @@ import org.apache.spark.streaming.kafka.KafkaCluster.LeaderOffset
  * An [[Offset]] for the [[KafkaSource]]. This one tracks all partitions of subscribed topics and
  * their offsets.
  */
-private[kafka08]
 case class KafkaSourceOffset(partitionToOffsets: Map[TopicAndPartition, LeaderOffset])
   extends Offset {
   override def toString(): String = {
@@ -34,7 +33,7 @@ case class KafkaSourceOffset(partitionToOffsets: Map[TopicAndPartition, LeaderOf
 }
 
 /** Companion object of the [[KafkaSourceOffset]] */
-private[kafka08] object KafkaSourceOffset {
+object KafkaSourceOffset {
 
   def getPartitionOffsets(offset: Offset): Map[TopicAndPartition, LeaderOffset] = {
     offset match {
