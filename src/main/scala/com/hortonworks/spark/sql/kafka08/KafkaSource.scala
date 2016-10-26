@@ -32,20 +32,7 @@ import org.apache.spark.streaming.kafka.KafkaCluster.LeaderOffset
 import com.hortonworks.spark.sql.kafka08.util.Logging
 
 /**
- * A [[Source]] that uses Kafka's SimpleConsumer API to reads data from Kafka. The design
- * for this source is as follows.
- *
- * - The [[KafkaSourceOffset]] is the custom [[Offset]] defined for this source that contains
- *   a map of TopicPartition -> offset. Note that this offset is 1 + (available offset). For
- *   example if the last record in a Kafka topic "t", partition 2 is offset 5, then
- *   KafkaSourceOffset will contain TopicPartition("t", 2) -> 6
- *
- * Zero data lost is not guaranteed when topics are deleted. If zero data lost is critical, the user
- * must make sure all messages in a topic have been processed when deleting a topic.
- *
- * There is a known issue caused by KAFKA-1894: the query using KafkaSource maybe cannot be stopped.
- * To avoid this issue, you should make sure stopping the query before stopping the Kafka brokers
- * and not use wrong broker addresses.
+ * A [[Source]] that uses Kafka's SimpleConsumer API to reads data from Kafka.
  */
 case class KafkaSource(
     sqlContext: SQLContext,
@@ -53,13 +40,15 @@ case class KafkaSource(
     kafkaParams: Map[String, String],
     sourceOptions: Map[String, String],
     metadataPath: String,
-    startFromSmallestOffset: Boolean,
-    failOnDataLoss: Boolean)
+    startFromSmallestOffset: Boolean)
   extends Source with Logging {
 
   private val sc = sqlContext.sparkContext
   private val kc = new KafkaCluster(kafkaParams)
   private val topicPartitions = KafkaCluster.checkErrors(kc.getPartitions(topics))
+
+  private val maxOffsetFetchAttempts =
+    sourceOptions.getOrElse("fetchOffset.numRetries", "3").toInt
 
   private lazy val initialPartitionOffsets = {
     val metadataLog = new HDFSMetadataLog[KafkaSourceOffset](sqlContext.sparkSession, metadataPath)
@@ -87,8 +76,7 @@ case class KafkaSource(
     // Make sure initialPartitionOffsets is initialized
     initialPartitionOffsets
 
-    // TODO. add max retries configuration
-    val offset = KafkaSourceOffset(fetchLatestOffsets(1))
+    val offset = KafkaSourceOffset(fetchLatestOffsets(maxOffsetFetchAttempts))
     debug(s"GetOffset: ${offset.partitionToOffsets.toSeq.map(_.toString).sorted}")
     Some(offset)
   }
@@ -132,8 +120,7 @@ case class KafkaSource(
       DefaultDecoder,
       Row](sc, kafkaParams, offsetRanges, leaders, messageHandler)
 
-    info("GetBatch generating RDD of offset range: " +
-      offsetRanges.sortBy(_.topic).mkString(","))
+    info("GetBatch generating RDD of offset range: " + offsetRanges.sortBy(_.topic).mkString(","))
     sqlContext.createDataFrame(rdd, schema)
   }
 

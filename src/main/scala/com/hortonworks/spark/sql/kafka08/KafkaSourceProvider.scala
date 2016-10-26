@@ -18,7 +18,6 @@
 package com.hortonworks.spark.sql.kafka08
 
 import java.{util => ju}
-import java.util.UUID
 
 import scala.collection.JavaConverters._
 
@@ -69,11 +68,6 @@ private[kafka08] class KafkaSourceProvider extends StreamSourceProvider
         .map { k => k.drop(6).toString -> parameters(k) }
         .toMap
 
-    // Each running query should use its own group id. Otherwise, the query may be only assigned
-    // partial data since Kafka will assign partitions to multiple consumers having the same group
-    // id. Hence, we should generate a unique id for each query.
-    val uniqueGroupId = s"spark-kafka-source-${UUID.randomUUID}-${metadataPath.hashCode}"
-
     val topics =
       caseInsensitiveParams.get(TOPICS) match {
         case Some(s) => s.split(",").map(_.trim).filter(_.nonEmpty).toSet
@@ -97,14 +91,11 @@ private[kafka08] class KafkaSourceProvider extends StreamSourceProvider
         .set(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "largest")
 
         // So that consumers does not commit offsets unnecessarily
-        .set(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false")
+        .set("auto.commit.enable", "false")
         .setIfUnset(ConsumerConfig.SOCKET_RECEIVE_BUFFER_CONFIG, "65536")
         .set(ConsumerConfig.GROUP_ID_CONFIG, "")
         .set("zookeeper.connect", "")
         .build()
-
-    val failOnDataLoss =
-      caseInsensitiveParams.getOrElse(FAIL_ON_DATA_LOSS_OPTION_KEY, "true").toBoolean
 
     new KafkaSource(
       sqlContext,
@@ -112,8 +103,7 @@ private[kafka08] class KafkaSourceProvider extends StreamSourceProvider
       kafkaParams.asScala.toMap,
       parameters,
       metadataPath,
-      startFromEarliestOffset,
-      failOnDataLoss)
+      startFromEarliestOffset)
   }
 
   private def validateOptions(parameters: Map[String, String]): Unit = {
@@ -167,7 +157,7 @@ private[kafka08] class KafkaSourceProvider extends StreamSourceProvider
     }
 
     val otherUnsupportedConfigs = Seq(
-      ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, // committing correctly requires new APIs in Source
+      "auto.commit.enable", // committing correctly requires new APIs in Source
       "zookeeper.connect")
 
     otherUnsupportedConfigs.foreach { c =>
@@ -212,6 +202,5 @@ private[kafka08] object KafkaSourceProvider {
   private val TOPICS = "topics"
   private val STARTING_OFFSET_OPTION_KEY = "startingoffset"
   private val STARTING_OFFSET_OPTION_VALUES = Set("largest", "smallest")
-  private val FAIL_ON_DATA_LOSS_OPTION_KEY = "failondataloss"
 }
 
