@@ -15,7 +15,7 @@ The main differences compared to Kafka 0.10 source are:
 Like other Sources in Spark ecosystem, the simplest way to use is to add the dependencies to Spark by:
 
 ```
-spark-submit 
+spark-submit
   --master local[*] \
   --package com.hortonworks.spark:spark-kafka-0-8-sql_2.11 \
   yourApp
@@ -29,7 +29,7 @@ To use `KafkaSource`, it is the same as any other Structured Streaming Sources a
 ```scala
 
     import spark.implicits
-    
+
     val reader = spark
       .readStream
       .format("kafka")
@@ -43,8 +43,8 @@ To use `KafkaSource`, it is the same as any other Structured Streaming Sources a
       .format("console")
       .trigger(ProcessingTime(2000L))
       .start()
-    
-    kafka.awaitTermination()  
+
+    kafka.awaitTermination()
 
 ```
 
@@ -65,21 +65,21 @@ Due to the rigid changes of Structured Streaming component, This Kafka 0.8 Sourc
 1. The schema of Kafka 0.8 source is fixed, you cannot change the schema of Kafka 0.8 source, this is different from most of other Sources in Spark.
 
     ```scala
-    
+
         StructType(Seq(
         StructField("key", BinaryType),
         StructField("value", BinaryType),
         StructField("topic", StringType),
         StructField("partition", IntegerType),
         StructField("offset", LongType)))
-    
+
     ```
 2. You have to set `kafka.bootstrap.servers` or `kafka.metadata.broker` in Source creation.
 3. You have to specify "topics" in Kafka 0.8 Source options, multiple topics are separated by ":".
 4. All the Kafka related configurations set through Kafka 0.8 Source should be start with "kafka." prefix.
-5. Option "startingoffset" can only be "smallest" or "largest".  
+5. Option "startingoffset" can only be "smallest" or "largest".
 
 
-# License 
+# License
 
-Apache License, Version 2.0 [Apache License, Version 2.0 http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+Apache License, Version 2.0 [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
