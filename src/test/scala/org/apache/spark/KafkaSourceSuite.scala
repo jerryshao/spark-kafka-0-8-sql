@@ -156,7 +156,6 @@ class KafkaSourceSuite extends KafkaSourceTest {
 
     testUnsupportedConfig("kafka.group.id")
     testUnsupportedConfig("kafka.auto.offset.reset")
-    testUnsupportedConfig("kafka.enable.auto.commit")
     testUnsupportedConfig("kafka.key.deserializer")
     testUnsupportedConfig("kafka.value.deserializer")
 
