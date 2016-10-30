@@ -17,7 +17,7 @@ Like other Sources in Spark ecosystem, the simplest way to use is to add the dep
 ```
 spark-submit
   --master local[*] \
-  --package com.hortonworks.spark:spark-kafka-0-8-sql_2.11 \
+  --packages com.hortonworks.spark:spark-kafka-0-8-sql_2.11:1.0 \
   yourApp
   ...
 ```
@@ -78,7 +78,6 @@ Due to the rigid changes of Structured Streaming component, This Kafka 0.8 Sourc
 3. You have to specify "topics" in Kafka 0.8 Source options, multiple topics are separated by ":".
 4. All the Kafka related configurations set through Kafka 0.8 Source should be start with "kafka." prefix.
 5. Option "startingoffset" can only be "smallest" or "largest".
-
 
 # License
 
