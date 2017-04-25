@@ -15,19 +15,15 @@
  * limitations under the License.
  */
 
-package org.apache.spark
+package org.apache.spark.sql.kafka08
 
 import scala.util.Random
-
 import kafka.common.TopicAndPartition
 import org.apache.spark.sql.execution.streaming._
 import org.apache.spark.sql.streaming.StreamTest
 import org.apache.spark.sql.test.SharedSQLContext
 import org.apache.spark.streaming.kafka.KafkaCluster.LeaderOffset
 import org.scalatest.time.SpanSugar._
-
-import com.hortonworks.spark.sql.kafka08.KafkaSource
-import com.hortonworks.spark.sql.kafka08.KafkaSourceOffset
 
 abstract class KafkaSourceTest extends StreamTest with SharedSQLContext {
 

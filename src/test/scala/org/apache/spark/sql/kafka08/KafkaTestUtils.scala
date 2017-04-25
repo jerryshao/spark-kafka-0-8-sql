@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.spark
+package org.apache.spark.sql.kafka08
 
 import java.io.File
 import java.lang.{Integer => JInt}
@@ -24,7 +24,6 @@ import java.util.{Properties, Map => JMap}
 
 import scala.collection.JavaConverters._
 import scala.language.postfixOps
-
 import kafka.admin.AdminUtils
 import kafka.api.Request
 import kafka.producer.{KeyedMessage, Producer, ProducerConfig}
@@ -35,10 +34,10 @@ import org.apache.commons.lang3.RandomUtils
 import org.apache.spark.util.Utils
 import org.apache.zookeeper.server.{NIOServerCnxnFactory, ZooKeeperServer}
 import org.I0Itec.zkclient.ZkClient
+import org.apache.spark.SparkConf
+import org.apache.spark.sql.kafka08.util.Logging
 import org.scalatest.concurrent.Eventually._
 import org.scalatest.time.SpanSugar._
-
-import com.hortonworks.spark.sql.kafka08.util.Logging
 
 /**
  * This is a helper class for Kafka test suites. This has the functionality to set up

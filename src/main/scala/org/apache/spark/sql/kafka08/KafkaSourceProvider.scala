@@ -15,19 +15,17 @@
  * limitations under the License.
  */
 
-package com.hortonworks.spark.sql.kafka08
+package org.apache.spark.sql.kafka08
 
 import java.{util => ju}
 
 import scala.collection.JavaConverters._
-
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.execution.streaming.Source
 import org.apache.spark.sql.sources.{DataSourceRegister, StreamSourceProvider}
 import org.apache.spark.sql.types.StructType
-
-import com.hortonworks.spark.sql.kafka08.util.Logging
+import org.apache.spark.sql.kafka08.util.Logging
 
 /**
  * The provider class for the [[KafkaSource]]. This provider is designed such that it throws
