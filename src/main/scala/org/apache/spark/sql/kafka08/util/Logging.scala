@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hortonworks.spark.sql.kafka08.util
+package org.apache.spark.sql.kafka08.util
 
 import org.slf4j.LoggerFactory
 

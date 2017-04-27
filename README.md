@@ -17,7 +17,7 @@ Like other Sources in Spark ecosystem, the simplest way to use is to add the dep
 ```
 spark-submit
   --master local[*] \
-  --packages com.hortonworks.spark:spark-kafka-0-8-sql_2.11:1.0 \
+  --packages org.apache.spark:spark-kafka-0-8-sql_2.11:1.0 \
   yourApp
   ...
 ```

@@ -1,1 +1,1 @@
-com.hortonworks.spark.sql.kafka08.KafkaSourceProvider
+org.apache.spark.sql.kafka08.KafkaSourceProvider

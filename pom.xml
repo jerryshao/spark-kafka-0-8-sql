@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.hortonworks.spark</groupId>
+  <groupId>org.apache.spark</groupId>
   <artifactId>spark-kafka-0-8-sql_2.11</artifactId>
   <version>1.0</version>
 
   <properties>
-    <spark.version>2.1.0-SNAPSHOT</spark.version>
-    <scala.version>2.11.8</scala.version>
+    <spark.version>2.2.0-SNAPSHOT</spark.version>
+    <scala.version>2.11.11</scala.version>
     <scala.binary.version>2.11</scala.binary.version>
     <MaxPermGen>512m</MaxPermGen>
     <CodeCacheSize>512m</CodeCacheSize>
@@ -19,6 +19,7 @@
     <maxJavaVersion>1.8</maxJavaVersion>
     <test.redirectToFile>true</test.redirectToFile>
     <skipDeploy>false</skipDeploy>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <dependencies>
@@ -91,6 +92,13 @@
       <groupId>org.scalacheck</groupId>
       <artifactId>scalacheck_${scala.binary.version}</artifactId>
       <version>1.12.5</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.scalatest</groupId>
+      <artifactId>scalatest_${scala.binary.version}</artifactId>
+      <version>2.2.6</version>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
